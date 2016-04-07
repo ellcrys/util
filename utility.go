@@ -223,6 +223,20 @@ func ContainsOnlyMapType(s []interface{}) bool {
     return true
 }
 
+// Checks if a slice contains only string values
+func IsSliceOfStrings(s []interface{}) bool {
+    for _, v := range s {
+        switch v.(type) {
+        case string:
+            continue
+            break
+        default:
+            return false
+        }
+    }
+    return true
+}
+
 // convert a unix time to time object
 func UnixToTime(i int64) time.Time {
     return time.Unix(i, 0)

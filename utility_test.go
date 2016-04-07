@@ -208,3 +208,10 @@ func TestGetJWSPayloadWithInvalidJWSToken(t *testing.T) {
 	_, err := GetJWSPayload(invalidJWS)
 	assert.NotNil(t, err)
 }
+
+func TestIsSliceOfStrings(t *testing.T) {
+	var strSlice = []interface{}{ "a", "b" }
+	var nonStrSlice = []interface{}{"a", 2, "b"}
+	assert.Equal(t, IsSliceOfStrings(strSlice), true)
+	assert.Equal(t, IsSliceOfStrings(nonStrSlice), false)
+}
