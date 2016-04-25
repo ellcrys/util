@@ -14,6 +14,7 @@ import (
     "path/filepath"
     "strconv"
     "io/ioutil"
+    "net/http"
 
     "github.com/satori/go.uuid"
 )
@@ -387,4 +388,30 @@ func ReadJSONFile(f string) (map[string]interface{}, error) {
     }
 
     return jsonData, nil
+}
+
+// Return all the ip chains of the request.
+// The first ip is the remote address and the
+// rest are extracted from the x-forwarded-for header
+func GetIps(req *http.Request) []string {
+
+    var ips []string
+    var remoteAddr = req.RemoteAddr
+    if remoteAddr != "" {
+        ipParts := strings.Split(remoteAddr, ":")
+        ips = append(ips, ipParts[0])
+    }
+
+    // fetch ips in x-forwarded-for header
+    var xForwardedFor = req.Header.Get("x-forwarded-for")
+    for xForwardedFor != "" {
+        xForwardedForParts := strings.Split(xForwardedFor, ", ")
+        for _, ip := range xForwardedForParts {
+            if !InStringSlice(ips, ip) {
+                ips = append(ips, ip)
+            }
+        }
+    }
+
+    return ips
 }
