@@ -401,12 +401,10 @@ func GetIPs(req *http.Request) []string {
         ipParts := strings.Split(remoteAddr, ":")
         ips = append(ips, ipParts[0])
     }
-    Println("H1")
+    
     // fetch ips in x-forwarded-for header
     var xForwardedFor = strings.TrimSpace(req.Header.Get("x-forwarded-for"))
-    Println("H2")
-    for xForwardedFor != "" {
-        Println("H3")
+    if xForwardedFor != "" {
         xForwardedForParts := strings.Split(xForwardedFor, ", ")
         for _, ip := range xForwardedForParts {
             if !InStringSlice(ips, ip) {
