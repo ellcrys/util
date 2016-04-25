@@ -1,10 +1,16 @@
 {
 	"ImportPath": "github.com/ellcrys/util",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
 	"Deps": [
 		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v2.3.0-1-g9fe8afe",
+			"Rev": "9fe8afe96d32468fba230b8b22acea86251f0506"
+		},
+		{
 			"ImportPath": "github.com/ellcrys/crypto",
-			"Rev": "7f680978e9731ba12c7e97f2ce7a04531c7abc76"
+			"Rev": "0a4b0be14cff5c4fae8174303e203d25425b5016"
 		},
 		{
 			"ImportPath": "github.com/satori/go.uuid",

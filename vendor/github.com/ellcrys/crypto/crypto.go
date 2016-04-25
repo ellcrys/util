@@ -12,8 +12,11 @@ import (
 	"encoding/pem"
 	"errors"
 	jose "gopkg.in/square/go-jose.v1"
+	jwt "github.com/dgrijalva/jwt-go"
 	"fmt"
 )
+
+const VerificationFailed = "crypto/rsa: verification error"
 
 // Parse a public
 func ParsePublicKey(pemBytes []byte) (*Signer, error) {
@@ -222,3 +225,37 @@ func GenerateKeyPair() (map[string]string, error) {
     return kp, nil
 }
 
+// Verify a JWT token using an RSA public key
+func VerifyJWTRSA(token, publicKey string) (bool, *jwt.Token, error) {
+
+	var parsedToken *jwt.Token
+
+	// parse token
+	state, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+
+		// ensure signing method is correct
+        if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+            return nil, errors.New("unknown signing method")
+        }
+
+        parsedToken = token
+
+        // verify 
+        key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
+        if err != nil {
+        	return nil, err
+        }
+
+        return key, nil
+    })
+
+    if err != nil {
+    	return false, &jwt.Token{}, err
+    }
+
+    if !state.Valid {
+    	return false, &jwt.Token{}, errors.New("invalid jwt token")
+    }
+
+    return true, parsedToken, nil
+}

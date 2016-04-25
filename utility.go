@@ -393,7 +393,7 @@ func ReadJSONFile(f string) (map[string]interface{}, error) {
 // Return all the ip chains of the request.
 // The first ip is the remote address and the
 // rest are extracted from the x-forwarded-for header
-func GetIps(req *http.Request) []string {
+func GetIPs(req *http.Request) []string {
 
     var ips []string
     var remoteAddr = req.RemoteAddr
