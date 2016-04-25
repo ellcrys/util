@@ -142,12 +142,26 @@ func NewID() string {
     return Sha1(id)
 }
 
-// Checks that a string slice contains a string value
-func InStringSlice(ss []string, val string) bool {
-    for _, v := range ss {
-        if v == val {
-            return true
+// Given a slice strings or a slice of interface{} where interface{}
+// must be strings. It checks to see if a string is 
+// contained in the slice. 
+func InStringSlice(list interface{}, val string) bool {
+    switch v := list.(type) {
+    case []interface{}:
+        for _, s := range v {
+            if s.(string) == val {
+                return true
+            }
         }
+        break
+    case []string:
+        for _, s := range v {
+            if s == val {
+                return true
+            }
+        }
+    default:
+        panic("unsupported type")
     }
     return false
 }
@@ -352,4 +366,25 @@ func GetJWSPayload(token string) (string, error) {
         return "", errors.New("parameter is not a valid token")
     }
     return parts[1], nil
+}
+
+
+// Read and decode json file
+func ReadJSONFile(f string) (map[string]interface{}, error) {
+
+    var key map[string]interface{}
+
+    // load file 
+    data, err := ioutil.ReadFile(f)
+    if err != nil {
+        return key, errors.New("failed to load file: " + f)
+    }
+
+    // parse file to json
+    jsonData, err := DecodeJSONToMap(string(data))
+    if err != nil {
+        return key, errors.New("failed to decode file: " + f)
+    }
+
+    return jsonData, nil
 }
