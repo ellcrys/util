@@ -403,8 +403,8 @@ func GetIPs(req *http.Request) []string {
     }
 
     // fetch ips in x-forwarded-for header
-    // var xForwardedFor = req.Header.Get("x-forwarded-for")
-    Println(req.Header, " <<<< Hello")
+    var xForwardedFor = req.Header.Get("x-forwarded-for")
+    Println(xForwardedFor, " <<<< Hello")
     // for xForwardedFor != "" {
     //     xForwardedForParts := strings.Split(xForwardedFor, ", ")
     //     for _, ip := range xForwardedForParts {
