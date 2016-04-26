@@ -416,10 +416,20 @@ func GetIPs(req *http.Request) []string {
     return ips
 }
 
-// Create an http Get request
+// Create an http GET request
 func NewGetRequest(url string, headers map[string]string) (*http.Response, error) {
     client := &http.Client{}
     req, _ := http.NewRequest("GET", url, strings.NewReader(""))
+    for key, val := range headers {
+        req.Header.Set(key, val)
+    }
+    return client.Do(req)
+}
+
+// Create a http POST request
+func NewPostRequest(url, body string, headers map[string]string) (*http.Response, error) {
+    client := &http.Client{}
+    req, _ := http.NewRequest("POST", url, strings.NewReader(body))
     for key, val := range headers {
         req.Header.Set(key, val)
     }
