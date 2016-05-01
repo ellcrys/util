@@ -215,3 +215,9 @@ func TestIsSliceOfStrings(t *testing.T) {
 	assert.Equal(t, IsSliceOfStrings(strSlice), true)
 	assert.Equal(t, IsSliceOfStrings(nonStrSlice), false)
 }
+
+func TestFloatToString(t *testing.T) {
+	assert.Equal(t, FloatToString(0.0001, 3), "0.000")
+	assert.Equal(t, FloatToString(0.0001, 4), "0.0001")
+	assert.Equal(t, FloatToString(433, 3), "433.000")
+}

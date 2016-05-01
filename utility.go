@@ -15,6 +15,7 @@ import (
     "strconv"
     "io/ioutil"
     "net/http"
+    "math/big"
 
     "github.com/satori/go.uuid"
 )
@@ -434,4 +435,12 @@ func NewPostRequest(url, body string, headers map[string]string) (*http.Response
         req.Header.Set(key, val)
     }
     return client.Do(req)
+}
+
+// Given a float value, it returns a full
+// string representation of the value
+func FloatToString(floatVal float64, precision int) string {
+    var v big.Float
+    v.SetFloat64(floatVal)
+    return v.Text('f', precision)
 }
