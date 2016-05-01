@@ -2,6 +2,7 @@ package util
 
 import (
 	"testing"
+	"errors"
 	"strings"
 	"time"
 	"encoding/json"
@@ -220,4 +221,17 @@ func TestFloatToString(t *testing.T) {
 	assert.Equal(t, FloatToString(0.0001, 3), "0.000")
 	assert.Equal(t, FloatToString(0.0001, 4), "0.0001")
 	assert.Equal(t, FloatToString(433, 3), "433.000")
+}
+
+func TestJSONToSliceOfMap(t *testing.T) {
+
+	var tests = [][]interface{}{
+		[]interface{}{ `[ { "name": "john"  }, { "name": "john" } ]`, nil },
+		[]interface{}{ `[ { "name": "john"  }, 3 ]`, errors.New("unable to parse json string") },
+	}
+
+	for _, test := range tests {
+		_, err := JSONToSliceOfMap(test[0].(string))
+		assert.Equal(t, test[1], err)
+	}
 }

@@ -103,19 +103,31 @@ func Map(m interface{}) map[string]interface{} {
     return m.(map[string]interface{})
 }
 
-// convert stringified JSON array to slice of string.
+// Convert stringified JSON array to slice of string.
 // JSON array must contain only string values
 func JSONToSliceString(jsonStr string) ([]string, error) {
     var data []string
     d := json.NewDecoder(strings.NewReader(jsonStr))
     d.UseNumber()
     if err := d.Decode(&data); err != nil {
-        return []string{}, errors.New("unable to parse json string");
+        return data, errors.New("unable to parse json string");
     }
     return data, nil
 }
 
-// convert a byte array to string
+// Convert stringified JSON array to slice of maps.
+// JSON array must contain only maps
+func JSONToSliceOfMap(jsonStr string) ([]map[string]interface{}, error) {
+    var data []map[string]interface{}
+    d := json.NewDecoder(strings.NewReader(jsonStr))
+    d.UseNumber()
+    if err := d.Decode(&data); err != nil {
+        return data, errors.New("unable to parse json string");
+    }
+    return data, nil
+}
+
+// Convert a byte array to string
 func ByteArrToString(byteArr []byte) string {
     return fmt.Sprintf("%s", byteArr)
 }
