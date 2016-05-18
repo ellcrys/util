@@ -29,6 +29,10 @@
 			"Rev": "e22aedd37671fb115be6c0c25129c405cb575cfd"
 		},
 		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "a396ed22fc049df733440d90efe17475e3929ccb"
+		},
+		{
 			"ImportPath": "gopkg.in/square/go-jose.v1",
 			"Rev": "70a7e670bd0d4bb35902d31f3a75a6689843abed"
 		}

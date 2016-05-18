@@ -235,3 +235,11 @@ func TestJSONToSliceOfMap(t *testing.T) {
 		assert.Equal(t, test[1], err)
 	}
 }
+
+func TestMsgPack(t *testing.T) {
+	mpBytes, err := MsgPackEncode([]byte("john"))
+	assert.Nil(t, err)
+	decBytes, err := MsgPackDecode(mpBytes)
+	assert.Nil(t, err)
+	assert.Equal(t, string(decBytes), "john")
+}

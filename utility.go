@@ -17,6 +17,7 @@ import (
     "net/http"
     "math/big"
 
+    "github.com/ugorji/go/codec"
     "github.com/satori/go.uuid"
 )
 
@@ -455,4 +456,22 @@ func FloatToString(floatVal float64, precision int) string {
     var v big.Float
     v.SetFloat64(floatVal)
     return v.Text('f', precision)
+}
+
+// Encode a slice of bytes using messagepack
+func MsgPackEncode(d []byte) ([]byte, error) {
+    var b []byte = make([]byte, 0, len(d))
+    var h codec.Handle = new(codec.JsonHandle)
+    var enc *codec.Encoder = codec.NewEncoderBytes(&b, h)
+    var err error = enc.Encode(d)
+    return b, err
+}
+
+// Decode a slice of messagepack bytes
+func MsgPackDecode(msgEnc []byte) ([]byte, error) {
+    var d []byte
+    var h codec.Handle = new(codec.JsonHandle)
+    var dec *codec.Decoder = codec.NewDecoderBytes(msgEnc, h)
+    err := dec.Decode(&d)
+    return d, err
 }
