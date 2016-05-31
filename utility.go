@@ -82,6 +82,7 @@ func ReadReader(reader io.Reader, nBytes int, cb func(err error, bs []byte, done
             if cb(err, buf, false) == false {
                 return
             }
+            break
         }
   
         // process buf
