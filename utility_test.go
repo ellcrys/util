@@ -250,3 +250,9 @@ func TestInStringSliceRx(t *testing.T) {
 	assert.Equal(t, InStringSliceRx(strs, "cool"), false)
 	assert.Equal(t, InStringSliceRx(strs, "(?i)cool"), true)
 }
+
+func TestStringSliceMatchString(t *testing.T) {
+	patterns := []string{ "(?i)central", "man" }
+	assert.Equal(t, StringSliceMatchString(patterns, "CENTRAL"), "(?i)central")
+	assert.Equal(t, StringSliceMatchString(patterns, "MAN"), "")
+}

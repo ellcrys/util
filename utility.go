@@ -488,3 +488,15 @@ func MsgPackDecode(msgEnc []byte) ([]byte, error) {
     err := dec.Decode(&d)
     return d, err
 }
+
+// Given a slice of string regex patterns, it will try to find the
+// pattern that matches a given match string. Returns the matching pattern
+// or an empty string
+func StringSliceMatchString(strPatterns []string, strToMatch string) string {
+    for _, pat := range strPatterns {
+        if match, _ := regexp.MatchString(pat, strToMatch); match {
+            return pat 
+        }
+    }
+    return ""
+}
