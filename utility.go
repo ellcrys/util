@@ -16,6 +16,7 @@ import (
     "io/ioutil"
     "net/http"
     "math/big"
+    "regexp"
 
     "github.com/ugorji/go/codec"
     "github.com/satori/go.uuid"
@@ -178,6 +179,17 @@ func InStringSlice(list interface{}, val string) bool {
         }
     default:
         panic("unsupported type")
+    }
+    return false
+}
+
+// Check whether a regex pattern matches an item in 
+// a string only slice
+func InStringSliceRx(strs []string, pattern string) bool {
+    for _, str := range strs {
+        if match, _ := regexp.MatchString(pattern, str); match {
+            return true
+        }
     }
     return false
 }

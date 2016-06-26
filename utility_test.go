@@ -243,3 +243,10 @@ func TestMsgPack(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, string(decBytes), "john")
 }
+
+func TestInStringSliceRx(t *testing.T) {
+	strs := []string{ "container", "content", "COOl" }
+	assert.Equal(t, InStringSliceRx(strs, ".*tent$"), true)
+	assert.Equal(t, InStringSliceRx(strs, "cool"), false)
+	assert.Equal(t, InStringSliceRx(strs, "(?i)cool"), true)
+}
