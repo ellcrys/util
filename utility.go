@@ -511,7 +511,7 @@ func JSONNumberToInt64(val interface{}) int64 {
 		return num
 		break
 	default:
-		panic("JSONNumberToInt64: unknown type. expects json.Number")
+		panic("JSONNumberToInt64: unknown type. Expects json.Number")
 	}
 	return 0
 }
