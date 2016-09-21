@@ -501,10 +501,17 @@ func StringSliceMatchString(strPatterns []string, strToMatch string) string {
 }
 
 // Convert a json.Number to Int64. Panics if error occurs
-func JSONNumberToInt64(val json.Number) int64 {
-	num, err := val.Int64()
-	if err != nil {
-		panic("JSONNumberToInt64: " + err.Error())
+func JSONNumberToInt64(val interface{}) int64 {
+	switch v := val.(type) {
+	case json.Number:
+		num, err := v.Int64()
+		if err != nil {
+			panic("JSONNumberToInt64: " + err.Error())
+		}
+		return num
+		break
+	default:
+		panic("JSONNumberToInt64: unknown type. expects json.Number")
 	}
-	return num
+	return 0
 }
