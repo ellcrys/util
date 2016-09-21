@@ -1,14 +1,14 @@
-package util 
+package util
 
 import (
-	"testing"
+	"encoding/json"
 	"errors"
 	"strings"
+	"testing"
 	"time"
-	"encoding/json"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/ellcrys/crypto"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestGenerateKeyPair tests that public and private key pairs are set
@@ -40,9 +40,9 @@ func TestReadOneByteAtATime(t *testing.T) {
 	var count = 0
 	text := "hello"
 	reader := strings.NewReader(text)
-	ReadReader(reader, 1, func (err error, bs []byte, done bool) bool {
+	ReadReader(reader, 1, func(err error, bs []byte, done bool) bool {
 		assert.Nil(t, err)
-		if (!done) {
+		if !done {
 			assert.Equal(t, string(bs), string(text[count]))
 			count++
 		}
@@ -77,7 +77,6 @@ func TestValueNotInStringSlice(t *testing.T) {
 	var r = InStringSlice(ss, "jane")
 	assert.Equal(t, r, false)
 }
-
 
 // TestValueInStringSlice tests that a string value is contained in a string slice or not
 func TestValueInStringSlice(t *testing.T) {
@@ -126,7 +125,7 @@ func TestIsMapOfAny(t *testing.T) {
 // TestContainsOnlyMapType tests that a variable's value type is a slice containing only map type
 func TestContainsOnlyMapType(t *testing.T) {
 	s := []interface{}{
-		map[string]interface{}{ "a": "b" },
+		map[string]interface{}{"a": "b"},
 	}
 	assert.Equal(t, true, ContainsOnlyMapType(s))
 }
@@ -172,7 +171,7 @@ func TestIntToFloat64(t *testing.T) {
 
 func TestIsMapEmpty(t *testing.T) {
 	expected := IsMapEmpty(map[string]interface{}{})
-	expected2 := IsMapEmpty(map[string]interface{}{ "a": "b" })
+	expected2 := IsMapEmpty(map[string]interface{}{"a": "b"})
 	assert.Equal(t, expected, true)
 	assert.Equal(t, expected2, false)
 }
@@ -182,7 +181,7 @@ func TestIntToString(t *testing.T) {
 }
 
 func TestMapToJSON(t *testing.T) {
-	m := map[string]interface{}{ "a": "b" }
+	m := map[string]interface{}{"a": "b"}
 	v, err := MapToJSON(m)
 	assert.Nil(t, err)
 	assert.Equal(t, v, `{"a":"b"}`)
@@ -190,7 +189,7 @@ func TestMapToJSON(t *testing.T) {
 
 func TestJSONToMap(t *testing.T) {
 	s := `{"a":"b"}`
-	expected := map[string]interface{}{ "a": "b" }
+	expected := map[string]interface{}{"a": "b"}
 	m, err := JSONToMap(s)
 	assert.Nil(t, err)
 	assert.Exactly(t, m, expected)
@@ -211,7 +210,7 @@ func TestGetJWSPayloadWithInvalidJWSToken(t *testing.T) {
 }
 
 func TestIsSliceOfStrings(t *testing.T) {
-	var strSlice = []interface{}{ "a", "b" }
+	var strSlice = []interface{}{"a", "b"}
 	var nonStrSlice = []interface{}{"a", 2, "b"}
 	assert.Equal(t, IsSliceOfStrings(strSlice), true)
 	assert.Equal(t, IsSliceOfStrings(nonStrSlice), false)
@@ -226,8 +225,8 @@ func TestFloatToString(t *testing.T) {
 func TestJSONToSliceOfMap(t *testing.T) {
 
 	var tests = [][]interface{}{
-		[]interface{}{ `[ { "name": "john"  }, { "name": "john" } ]`, nil },
-		[]interface{}{ `[ { "name": "john"  }, 3 ]`, errors.New("unable to parse json string") },
+		[]interface{}{`[ { "name": "john"  }, { "name": "john" } ]`, nil},
+		[]interface{}{`[ { "name": "john"  }, 3 ]`, errors.New("unable to parse json string")},
 	}
 
 	for _, test := range tests {
@@ -245,14 +244,18 @@ func TestMsgPack(t *testing.T) {
 }
 
 func TestInStringSliceRx(t *testing.T) {
-	strs := []string{ "container", "content", "COOl" }
+	strs := []string{"container", "content", "COOl"}
 	assert.Equal(t, InStringSliceRx(strs, ".*tent$"), true)
 	assert.Equal(t, InStringSliceRx(strs, "cool"), false)
 	assert.Equal(t, InStringSliceRx(strs, "(?i)cool"), true)
 }
 
 func TestStringSliceMatchString(t *testing.T) {
-	patterns := []string{ "(?i)central", "man" }
+	patterns := []string{"(?i)central", "man"}
 	assert.Equal(t, StringSliceMatchString(patterns, "CENTRAL"), "(?i)central")
 	assert.Equal(t, StringSliceMatchString(patterns, "MAN"), "")
+}
+
+func TestJSONNumberToInt64(t *testing.T) {
+	assert.Equal(t, int64(10), JSONNumberToInt64(json.Number("10")))
 }
