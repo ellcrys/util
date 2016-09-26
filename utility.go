@@ -515,3 +515,13 @@ func JSONNumberToInt64(val interface{}) int64 {
 	}
 	return 0
 }
+
+// convert struct or map to json
+func ToJSON(data interface{}) ([]byte, error) {
+	return json.Marshal(data)
+}
+
+// convert json to struct or map
+func FromJSON(data []byte, container interface{}) error {
+	return json.Unmarshal(data, container)
+}
