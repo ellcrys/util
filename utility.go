@@ -525,3 +525,11 @@ func ToJSON(data interface{}) ([]byte, error) {
 func FromJSON(data []byte, container interface{}) error {
 	return json.Unmarshal(data, container)
 }
+
+// Given a non empty slice, get a randon item from the slice
+func GetRandFromSlice(slice []interface{}) interface{} {
+	if len(slice) == 0 {
+		return nil
+	}
+	return slice[RandNum(0, len(slice))]
+}
