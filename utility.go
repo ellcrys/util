@@ -533,3 +533,11 @@ func GetRandFromSlice(slice []interface{}) interface{} {
 	}
 	return slice[RandNum(0, len(slice))]
 }
+
+// Given a non empty slice of string, get a random item from the slice
+func GetRandFromStringSlice(sliceOfString []string) string {
+	if len(sliceOfString) == 0 {
+		return ""
+	}
+	return sliceOfString[RandNum(0, len(sliceOfString))]
+}
