@@ -1,0 +1,27 @@
+hash: 9ed447bc6e186bccafe7f69b3d350384f538c8181f613e2ded875e29cce2464d
+updated: 2016-11-10T16:41:07.379910242+01:00
+imports:
+- name: github.com/dgrijalva/jwt-go
+  version: ""
+- name: github.com/ellcrys/crypto
+  version: ""
+- name: github.com/franela/goreq
+  version: fc08df6ca2d4a0d1a5ae24739aa268863943e723
+- name: github.com/satori/go.uuid
+  version: ""
+- name: github.com/square/go-jose
+  version: ""
+  subpackages:
+  - cipher
+  - json
+- name: github.com/stretchr/testify
+  version: ""
+  subpackages:
+  - assert
+- name: github.com/ugorji/go
+  version: ""
+  subpackages:
+  - codec
+- name: gopkg.in/square/go-jose.v1
+  version: ""
+devImports: []

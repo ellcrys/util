@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/sha1"
 	"encoding/json"
 	"errors"
@@ -18,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/franela/goreq"
 	"github.com/satori/go.uuid"
 	"github.com/ugorji/go/codec"
 )
@@ -540,4 +542,57 @@ func GetRandFromStringSlice(sliceOfString []string) string {
 		return ""
 	}
 	return sliceOfString[RandNum(0, len(sliceOfString))]
+}
+
+// Downloads the contents of a URL
+func DownloadUrl(url string) (*bytes.Buffer, int, error) {
+
+	res, err := goreq.Request{
+		Method:       "GET",
+		Uri:          url,
+		MaxRedirects: 3,
+	}.Do()
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var buf bytes.Buffer
+
+	for {
+		bs := make([]byte, 32)
+		r, _ := res.Body.Read(bs)
+		if r == 0 {
+			break
+		}
+		buf.Write(bs)
+	}
+
+	return &buf, res.StatusCode, nil
+}
+
+// Download the content of a url and pass to a function
+func DownloadUrlToFunc(url string, f func([]byte, int)) error {
+
+	res, err := goreq.Request{
+		Method:       "GET",
+		Uri:          url,
+		MaxRedirects: 3,
+	}.Do()
+
+	if err != nil {
+		return err
+	}
+
+	for {
+		bs := make([]byte, 32)
+		r, _ := res.Body.Read(bs)
+		if r == 0 {
+			break
+		}
+
+		f(bs, res.StatusCode)
+	}
+
+	return nil
 }

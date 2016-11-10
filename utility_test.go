@@ -259,3 +259,17 @@ func TestStringSliceMatchString(t *testing.T) {
 func TestJSONNumberToInt64(t *testing.T) {
 	assert.Equal(t, int64(10), JSONNumberToInt64(json.Number("10")))
 }
+
+func TestDownloadUrl(t *testing.T) {
+	buf, status, err := DownloadUrl("https://google.com.ng")
+	assert.Nil(t, err)
+	assert.Equal(t, status, 200)
+	assert.NotNil(t, buf)
+}
+
+func TestDownloadToFunc(t *testing.T) {
+	err := DownloadUrlToFunc("https://google.com.ng", func(d []byte, status int) {
+		assert.Equal(t, 200, status)
+	})
+	assert.Nil(t, err)
+}
