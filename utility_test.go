@@ -273,3 +273,11 @@ func TestDownloadToFunc(t *testing.T) {
 	})
 	assert.Nil(t, err)
 }
+
+func TestRenderTemp(t *testing.T) {
+	str := "My name is {{name}}"
+	data := map[string]interface{}{
+		"name": "Jeff",
+	}
+	assert.Equal(t, "My name is Jeff", RenderTemp(str, data))
+}

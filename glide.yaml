@@ -22,3 +22,4 @@ import:
 - package: gopkg.in/square/go-jose.v1
   version: 70a7e670bd0d4bb35902d31f3a75a6689843abed
 - package: github.com/franela/goreq
+- package: github.com/cbroglie/mustache

@@ -1,27 +1,49 @@
-hash: 9ed447bc6e186bccafe7f69b3d350384f538c8181f613e2ded875e29cce2464d
-updated: 2016-11-10T16:41:07.379910242+01:00
+hash: 337678a74b05205a68374ed51089c3d4e2a98f9bfd3c493247595da090f991f5
+updated: 2016-11-11T11:25:56.892117289+01:00
 imports:
+- name: github.com/cbroglie/mustache
+  version: 6857e4b493bdb8d4b1931446eb41704aeb4c28cb
 - name: github.com/dgrijalva/jwt-go
-  version: ""
+  version: 9fe8afe96d32468fba230b8b22acea86251f0506
 - name: github.com/ellcrys/crypto
-  version: ""
+  version: 0a4b0be14cff5c4fae8174303e203d25425b5016
+- name: github.com/fatih/color
+  version: bf82308e8c8546dc2b945157173eb8a959ae9505
 - name: github.com/franela/goreq
   version: fc08df6ca2d4a0d1a5ae24739aa268863943e723
+- name: github.com/hokaccha/go-prettyjson
+  version: f75235bd99dad4e98ff360db8372d5c0ef1d054a
+- name: github.com/mattn/go-colorable
+  version: d228849504861217f796da67fae4f6e347643f15
+- name: github.com/mattn/go-isatty
+  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
 - name: github.com/satori/go.uuid
-  version: ""
+  version: 242673bbc820e051ef00033e274d32e08ece9e15
 - name: github.com/square/go-jose
-  version: ""
+  version: 70a7e670bd0d4bb35902d31f3a75a6689843abed
   subpackages:
   - cipher
   - json
 - name: github.com/stretchr/testify
-  version: ""
+  version: e22aedd37671fb115be6c0c25129c405cb575cfd
   subpackages:
   - assert
 - name: github.com/ugorji/go
-  version: ""
+  version: a396ed22fc049df733440d90efe17475e3929ccb
   subpackages:
   - codec
+- name: golang.org/x/sys
+  version: b699b7032584f0953262cb2788a0ca19bb494703
+  subpackages:
+  - unix
 - name: gopkg.in/square/go-jose.v1
-  version: ""
-devImports: []
+  version: 70a7e670bd0d4bb35902d31f3a75a6689843abed
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib

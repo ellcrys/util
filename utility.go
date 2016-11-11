@@ -19,7 +19,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cbroglie/mustache"
 	"github.com/franela/goreq"
+	"github.com/hokaccha/go-prettyjson"
 	"github.com/satori/go.uuid"
 	"github.com/ugorji/go/codec"
 )
@@ -595,4 +597,21 @@ func DownloadUrlToFunc(url string, f func([]byte, int)) error {
 	}
 
 	return nil
+}
+
+// Pretty print an object
+func Printify(d interface{}) {
+	bs, err := prettyjson.Marshal(d)
+	if err != nil {
+		panic(err)
+	}
+	Println(string(bs))
+}
+
+func RenderTemp(data string, temp map[string]interface{}) string {
+	data, err := mustache.Render(data, temp)
+	if err != nil {
+		panic(err)
+	}
+	return data
 }
