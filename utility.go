@@ -559,18 +559,31 @@ func DownloadUrl(url string) (*bytes.Buffer, int, error) {
 		return nil, 0, err
 	}
 
-	var buf bytes.Buffer
+	var data bytes.Buffer
+	buf := make([]byte, 0, 1*1024)
 
 	for {
-		bs := make([]byte, 32)
-		r, _ := res.Body.Read(bs)
-		if r == 0 {
-			break
+
+		n, err := res.Body.Read(buf[:cap(buf)])
+		buf = buf[:n]
+		if n == 0 {
+			if err == nil {
+				continue
+			}
+			if err == io.EOF {
+				break
+			}
+			return nil, res.StatusCode, err
 		}
-		buf.Write(bs)
+
+		if err != nil && err != io.EOF {
+			return nil, res.StatusCode, err
+		}
+
+		data.Write(buf)
 	}
 
-	return &buf, res.StatusCode, nil
+	return &data, res.StatusCode, nil
 }
 
 // Download the content of a url and pass to a function
@@ -586,14 +599,26 @@ func DownloadUrlToFunc(url string, f func([]byte, int)) error {
 		return err
 	}
 
+	buf := make([]byte, 0, 1*1024)
+
 	for {
-		bs := make([]byte, 32)
-		r, _ := res.Body.Read(bs)
-		if r == 0 {
-			break
+		n, err := res.Body.Read(buf[:cap(buf)])
+		buf = buf[:n]
+		if n == 0 {
+			if err == nil {
+				continue
+			}
+			if err == io.EOF {
+				break
+			}
+			return err
 		}
 
-		f(bs, res.StatusCode)
+		if err != nil && err != io.EOF {
+			return err
+		}
+
+		f(buf, res.StatusCode)
 	}
 
 	return nil

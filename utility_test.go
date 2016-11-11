@@ -261,7 +261,7 @@ func TestJSONNumberToInt64(t *testing.T) {
 }
 
 func TestDownloadUrl(t *testing.T) {
-	buf, status, err := DownloadUrl("https://google.com.ng")
+	buf, status, err := DownloadUrl("https://storage.googleapis.com/fc-images/54fde1c101eb8acb51e81e43a5889723c53acd2c")
 	assert.Nil(t, err)
 	assert.Equal(t, status, 200)
 	assert.NotNil(t, buf)
