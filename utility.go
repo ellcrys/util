@@ -24,6 +24,7 @@ import (
 	"github.com/hokaccha/go-prettyjson"
 	"github.com/satori/go.uuid"
 	"github.com/ugorji/go/codec"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func init() {
@@ -644,4 +645,15 @@ func RenderTemp(data string, temp map[string]interface{}) string {
 		panic(err)
 	}
 	return data
+}
+
+// FromBSONMap converts bson map to a different struct or map type
+func FromBSONMap(d bson.M, container interface{}) {
+
+	jsonBs, err := ToJSON(d)
+	if err != nil {
+		panic(err)
+	}
+
+	FromJSON(jsonBs, container)
 }

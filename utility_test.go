@@ -9,6 +9,7 @@ import (
 
 	"github.com/ellcrys/crypto"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // TestGenerateKeyPair tests that public and private key pairs are set
@@ -280,4 +281,15 @@ func TestRenderTemp(t *testing.T) {
 		"name": "Jeff",
 	}
 	assert.Equal(t, "My name is Jeff", RenderTemp(str, data))
+}
+
+func TestFromBSONMap(t *testing.T) {
+	bsonM := bson.M{"_id": bson.NewObjectId(), "name": "John"}
+	var container = struct {
+		ID   string `json:"_id"`
+		Name string `json:"name"`
+	}{}
+	FromBSONMap(bsonM, &container)
+	assert.Equal(t, bsonM["_id"].(bson.ObjectId).Hex(), container.ID)
+	assert.Equal(t, bsonM["name"].(string), container.Name)
 }
