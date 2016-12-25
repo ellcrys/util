@@ -260,15 +260,15 @@ func TestJSONNumberToInt64(t *testing.T) {
 	assert.Equal(t, int64(10), JSONNumberToInt64(json.Number("10")))
 }
 
-func TestDownloadUrl(t *testing.T) {
-	buf, status, err := DownloadUrl("https://storage.googleapis.com/fc-images/54fde1c101eb8acb51e81e43a5889723c53acd2c")
+func TestDownloadURL(t *testing.T) {
+	buf, status, err := DownloadURL("https://google.com.ng")
 	assert.Nil(t, err)
 	assert.Equal(t, status, 200)
 	assert.NotNil(t, buf)
 }
 
-func TestDownloadToFunc(t *testing.T) {
-	err := DownloadUrlToFunc("https://google.com.ng", func(d []byte, status int) {
+func TestDownloadURLToFunc(t *testing.T) {
+	err := DownloadURLToFunc("https://google.com.ng", func(d []byte, status int) {
 		assert.Equal(t, 200, status)
 	})
 	assert.Nil(t, err)
