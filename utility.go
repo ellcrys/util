@@ -32,25 +32,25 @@ func init() {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// Convenient function for fmt.Println.
+// Println is a convenient function for fmt.Println.
 // Useful when you already have util package imported in current file
 func Println(any ...interface{}) {
 	fmt.Println(any...)
 }
 
-// Get UUID v4 string
+// UUID4 returns a UUID v4 string
 func UUID4() string {
 	return uuid.NewV4().String()
 }
 
-// sha1 hashing
+// Sha1 returns a sha1 hash
 func Sha1(str string) string {
 	h := sha1.New()
 	h.Write([]byte(str))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-// decode json string to map
+// DecodeJSONToMap decode json string to map
 func DecodeJSONToMap(str string) (map[string]interface{}, error) {
 	var dat map[string]interface{}
 	if err := json.Unmarshal([]byte(str), &dat); err != nil {
@@ -59,7 +59,7 @@ func DecodeJSONToMap(str string) (map[string]interface{}, error) {
 	return dat, nil
 }
 
-// get random string of fixed length
+// RandString gets random string of fixed length
 func RandString(n int) string {
 	b := make([]byte, n)
 	for i := range b {
@@ -68,7 +68,7 @@ func RandString(n int) string {
 	return string(b)
 }
 
-// Read n bytes from a pipe and pass bytes read to a callback. If an error occurs
+// ReadReader reads n bytes from a pipe and pass bytes read to a callback. If an error occurs
 // error is passed to the callback. The callback signature is:
 // Func(err error, bs []byte, done bool).
 func ReadReader(reader io.Reader, nBytes int, cb func(err error, bs []byte, done bool) bool) {
@@ -105,12 +105,12 @@ func ReadReader(reader io.Reader, nBytes int, cb func(err error, bs []byte, done
 	cb(nil, buf, true)
 }
 
-// cast to map
+// Map casts an interface to Map type
 func Map(m interface{}) map[string]interface{} {
 	return m.(map[string]interface{})
 }
 
-// Convert stringified JSON array to slice of string.
+// JSONToSliceString converts stringified JSON array to slice of string.
 // JSON array must contain only string values
 func JSONToSliceString(jsonStr string) ([]string, error) {
 	var data []string
@@ -122,7 +122,7 @@ func JSONToSliceString(jsonStr string) ([]string, error) {
 	return data, nil
 }
 
-// Convert stringified JSON array to slice of maps.
+// JSONToSliceOfMap converts stringified JSON array to slice of maps.
 // JSON array must contain only maps
 func JSONToSliceOfMap(jsonStr string) ([]map[string]interface{}, error) {
 	var data []map[string]interface{}
@@ -134,12 +134,12 @@ func JSONToSliceOfMap(jsonStr string) ([]map[string]interface{}, error) {
 	return data, nil
 }
 
-// Convert a byte array to string
+// ByteArrToString converts a byte array to string
 func ByteArrToString(byteArr []byte) string {
 	return fmt.Sprintf("%s", byteArr)
 }
 
-// Read files from /tests/fixtures/ directory
+// ReadFromFixtures reads files from /tests/fixtures/ directory
 func ReadFromFixtures(path string) string {
 	absPath, _ := filepath.Abs(path)
 	dat, err := ioutil.ReadFile(absPath)
@@ -149,23 +149,25 @@ func ReadFromFixtures(path string) string {
 	return fmt.Sprintf("%s", dat)
 }
 
-// generate random numbers between a range
+// RandNum generates random numbers between a range
 func RandNum(min, max int) int {
 	s1 := r.NewSource(time.Now().UnixNano())
 	r1 := r.New(s1)
 	return r1.Intn(max-min) + min
 }
 
-// Generate an id to be used as a stone id.
+// NewID generates an id for use as an id.
 func NewID() string {
 	curTime := int(time.Now().Unix())
 	id := fmt.Sprintf("%s:%d", UUID4(), curTime)
 	return Sha1(id)
 }
 
-// Given a slice strings or a slice of interface{} where interface{}
-// must be strings. It checks to see if a string is
-// contained in the slice.
+// InStringSlice takes an interface that it expects to be
+// a slice of string or a slice of interface and attempts to find
+// a string value in the slice. The the list is a slice of interface
+// it cast the values of the list to string and compares with the value
+// being searched for. Returns true if the value is found or false.
 func InStringSlice(list interface{}, val string) bool {
 	switch v := list.(type) {
 	case []interface{}:
@@ -187,7 +189,7 @@ func InStringSlice(list interface{}, val string) bool {
 	return false
 }
 
-// Check whether a regex pattern matches an item in
+// InStringSliceRx check whether a regex pattern matches an item in
 // a string only slice
 func InStringSliceRx(strs []string, pattern string) bool {
 	for _, str := range strs {
@@ -198,9 +200,9 @@ func InStringSliceRx(strs []string, pattern string) bool {
 	return false
 }
 
-// Checks if a key exists in a map
+// HasKey checks if a key exists in a map
 func HasKey(m map[string]interface{}, key string) bool {
-	for k, _ := range m {
+	for k := range m {
 		if k == key {
 			return true
 		}
@@ -208,7 +210,7 @@ func HasKey(m map[string]interface{}, key string) bool {
 	return false
 }
 
-// Checks that a value type is string
+// IsStringValue checks that a value type is string
 func IsStringValue(any interface{}) bool {
 	switch any.(type) {
 	case string:
@@ -218,18 +220,18 @@ func IsStringValue(any interface{}) bool {
 	}
 }
 
-// Get all the keys of a map
+// GetMapKeys gets all the keys of a map
 func GetMapKeys(m map[string]interface{}) []string {
 	mk := make([]string, len(m))
 	i := 0
-	for key, _ := range m {
+	for key := range m {
 		mk[i] = key
 		i++
 	}
 	return mk
 }
 
-// checks that a variable value type is a map of any value
+// IsMapOfAny checks that a variable value type is a map of any value
 func IsMapOfAny(any interface{}) bool {
 	switch any.(type) {
 	case map[string]interface{}:
@@ -242,7 +244,7 @@ func IsMapOfAny(any interface{}) bool {
 	return false
 }
 
-// checks that a variable value type is a slice
+// IsSlice checks that a variable value type is a slice
 func IsSlice(any interface{}) bool {
 	switch any.(type) {
 	case []interface{}:
@@ -255,7 +257,7 @@ func IsSlice(any interface{}) bool {
 	return false
 }
 
-// checks that a slice contains map[string]interface{} type
+// ContainsOnlyMapType checks that a slice contains map[string]interface{} type
 func ContainsOnlyMapType(s []interface{}) bool {
 	for _, v := range s {
 		switch v.(type) {
@@ -269,7 +271,7 @@ func ContainsOnlyMapType(s []interface{}) bool {
 	return true
 }
 
-// Checks if a slice contains only string values
+// IsSliceOfStrings Checks if a slice contains only string values
 func IsSliceOfStrings(s []interface{}) bool {
 	for _, v := range s {
 		switch v.(type) {
@@ -283,12 +285,12 @@ func IsSliceOfStrings(s []interface{}) bool {
 	return true
 }
 
-// convert a unix time to time object
+// UnixToTime converts a unix time to time object
 func UnixToTime(i int64) time.Time {
 	return time.Unix(i, 0)
 }
 
-// check whether the value passed is int, float64, float32 or int64
+// IsNumberValue checks whether the value passed is int, float64, float32 or int64
 func IsNumberValue(val interface{}) bool {
 	switch val.(type) {
 	case int, int64, float32, float64:
@@ -298,7 +300,7 @@ func IsNumberValue(val interface{}) bool {
 	}
 }
 
-// checks whether the value passed is an integer
+// IsInt checks whether the value passed is an integer
 func IsInt(val interface{}) bool {
 	switch val.(type) {
 	case int, int64:
@@ -308,7 +310,7 @@ func IsInt(val interface{}) bool {
 	}
 }
 
-// checks whether the value passed is a json.Number type
+// IsJSONNumber checks whether the value passed is a json.Number type
 func IsJSONNumber(val interface{}) bool {
 	switch val.(type) {
 	case json.Number:
@@ -318,7 +320,7 @@ func IsJSONNumber(val interface{}) bool {
 	}
 }
 
-// cast int value to float64
+// IntToFloat64 cast int value to float64
 func IntToFloat64(num interface{}) float64 {
 	switch v := num.(type) {
 	case int:
@@ -330,7 +332,7 @@ func IntToFloat64(num interface{}) float64 {
 	}
 }
 
-// converts int, float32 and float64 to int64
+// ToInt64 converts int, float32 and float64 to int64
 func ToInt64(num interface{}) int64 {
 	switch v := num.(type) {
 	case int:
@@ -352,7 +354,7 @@ func ToInt64(num interface{}) int64 {
 	return 0
 }
 
-// get environment variable or return a default value when no set
+// Env gets environment variable or return a default value when no set
 func Env(key, defStr string) string {
 	val := os.Getenv(key)
 	if val == "" && defStr != "" {
@@ -361,17 +363,17 @@ func Env(key, defStr string) string {
 	return val
 }
 
-// check if a map is empty
+// IsMapEmpty check if a map is empty
 func IsMapEmpty(m map[string]interface{}) bool {
 	return len(GetMapKeys(m)) == 0
 }
 
-// converts int to string
+// IntToString converts int to string
 func IntToString(v int64) string {
 	return fmt.Sprintf("%d", v)
 }
 
-// Given a map, it returns a json string representation of it
+// MapToJSON returns a json string representation of a map
 func MapToJSON(m map[string]interface{}) (string, error) {
 	bs, err := json.Marshal(&m)
 	if err != nil {
@@ -380,7 +382,7 @@ func MapToJSON(m map[string]interface{}) (string, error) {
 	return string(bs), nil
 }
 
-// Given a json string, it decodes it into a map
+// JSONToMap decodes a json string to a map
 func JSONToMap(jsonStr string) (map[string]interface{}, error) {
 	var data map[string]interface{}
 	d := json.NewDecoder(strings.NewReader(jsonStr))
@@ -391,7 +393,7 @@ func JSONToMap(jsonStr string) (map[string]interface{}, error) {
 	return data, nil
 }
 
-// Get the encoded payload from a JWS token
+// GetJWSPayload gets the encoded payload from a JWS token
 func GetJWSPayload(token string) (string, error) {
 	var parts = strings.Split(token, ".")
 	if len(parts) != 3 {
@@ -400,27 +402,27 @@ func GetJWSPayload(token string) (string, error) {
 	return parts[1], nil
 }
 
-// Read and decode json file
-func ReadJSONFile(f string) (map[string]interface{}, error) {
+// ReadJSONFile reads and decode json file
+func ReadJSONFile(filePath string) (map[string]interface{}, error) {
 
 	var key map[string]interface{}
 
 	// load file
-	data, err := ioutil.ReadFile(f)
+	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return key, errors.New("failed to load file: " + f)
+		return key, errors.New("failed to load file: " + filePath)
 	}
 
 	// parse file to json
 	jsonData, err := DecodeJSONToMap(string(data))
 	if err != nil {
-		return key, errors.New("failed to decode file: " + f)
+		return key, errors.New("failed to decode file: " + filePath)
 	}
 
 	return jsonData, nil
 }
 
-// Return all the ip chains of the request.
+// GetIPs returns all the ip chains of the request.
 // The first ip is the remote address and the
 // rest are extracted from the x-forwarded-for header
 func GetIPs(req *http.Request) []string {
@@ -446,7 +448,7 @@ func GetIPs(req *http.Request) []string {
 	return ips
 }
 
-// Create an http GET request
+// NewGetRequest creates a http GET request
 func NewGetRequest(url string, headers map[string]string) (*http.Response, error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", url, strings.NewReader(""))
@@ -456,7 +458,7 @@ func NewGetRequest(url string, headers map[string]string) (*http.Response, error
 	return client.Do(req)
 }
 
-// Create a http POST request
+// NewPostRequest creates a http POST request
 func NewPostRequest(url, body string, headers map[string]string) (*http.Response, error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", url, strings.NewReader(body))
@@ -466,7 +468,7 @@ func NewPostRequest(url, body string, headers map[string]string) (*http.Response
 	return client.Do(req)
 }
 
-// Given a float value, it returns a full
+// FloatToString given a float value, it returns a full
 // string representation of the value
 func FloatToString(floatVal float64, precision int) string {
 	var v big.Float
@@ -474,27 +476,27 @@ func FloatToString(floatVal float64, precision int) string {
 	return v.Text('f', precision)
 }
 
-// Encode a slice of bytes using messagepack
+// MsgPackEncode encode a slice of bytes using messagepack
 func MsgPackEncode(d []byte) ([]byte, error) {
-	var b []byte = make([]byte, 0, len(d))
+	var b = make([]byte, 0, len(d))
 	var h codec.Handle = new(codec.JsonHandle)
-	var enc *codec.Encoder = codec.NewEncoderBytes(&b, h)
-	var err error = enc.Encode(d)
+	var enc = codec.NewEncoderBytes(&b, h)
+	var err = enc.Encode(d)
 	return b, err
 }
 
-// Decode a slice of messagepack bytes
+// MsgPackDecode decodes a slice of messagepack bytes
 func MsgPackDecode(msgEnc []byte) ([]byte, error) {
 	var d []byte
 	var h codec.Handle = new(codec.JsonHandle)
-	var dec *codec.Decoder = codec.NewDecoderBytes(msgEnc, h)
+	var dec = codec.NewDecoderBytes(msgEnc, h)
 	err := dec.Decode(&d)
 	return d, err
 }
 
-// Given a slice of string regex patterns, it will try to find the
-// pattern that matches a given match string. Returns the matching pattern
-// or an empty string
+// StringSliceMatchString takes a slice of regex pattern and a string to
+// match and returns the pattern that matches the string to match. Returns
+// empty string no match is found.
 func StringSliceMatchString(strPatterns []string, strToMatch string) string {
 	for _, pat := range strPatterns {
 		if match, _ := regexp.MatchString(pat, strToMatch); match {
@@ -504,7 +506,8 @@ func StringSliceMatchString(strPatterns []string, strToMatch string) string {
 	return ""
 }
 
-// Convert a json.Number to Int64. Panics if error occurs
+// JSONNumberToInt64 converts a json.Number object to Int64.
+// Panics if object is not a json.Number type.
 func JSONNumberToInt64(val interface{}) int64 {
 	switch v := val.(type) {
 	case json.Number:
@@ -520,17 +523,17 @@ func JSONNumberToInt64(val interface{}) int64 {
 	return 0
 }
 
-// convert struct or map to json
+//  ToJSON converts struct or map to json
 func ToJSON(data interface{}) ([]byte, error) {
 	return json.Marshal(data)
 }
 
-// convert json to struct or map
+// FromJSON converts json to struct or map
 func FromJSON(data []byte, container interface{}) error {
 	return json.Unmarshal(data, container)
 }
 
-// Given a non empty slice, get a randon item from the slice
+// GetRandFromSlice returns a random value from a slice of interface.
 func GetRandFromSlice(slice []interface{}) interface{} {
 	if len(slice) == 0 {
 		return nil
@@ -538,7 +541,7 @@ func GetRandFromSlice(slice []interface{}) interface{} {
 	return slice[RandNum(0, len(slice))]
 }
 
-// Given a non empty slice of string, get a random item from the slice
+// GetRandFromStringSlice returns a random value from a slice of string
 func GetRandFromStringSlice(sliceOfString []string) string {
 	if len(sliceOfString) == 0 {
 		return ""
@@ -546,8 +549,8 @@ func GetRandFromStringSlice(sliceOfString []string) string {
 	return sliceOfString[RandNum(0, len(sliceOfString))]
 }
 
-// Downloads the contents of a URL
-func DownloadUrl(url string) (*bytes.Buffer, int, error) {
+// DownloadURL downloads content from a url and returns buffer
+func DownloadURL(url string) (*bytes.Buffer, int, error) {
 
 	res, err := goreq.Request{
 		Method:       "GET",
@@ -586,8 +589,9 @@ func DownloadUrl(url string) (*bytes.Buffer, int, error) {
 	return &data, res.StatusCode, nil
 }
 
-// Download the content of a url and pass to a function
-func DownloadUrlToFunc(url string, f func([]byte, int)) error {
+// DownloadURLToFunc fetches the content from a url and pass
+// downloaded chunks to a callback function.
+func DownloadURLToFunc(url string, f func([]byte, int)) error {
 
 	res, err := goreq.Request{
 		Method:       "GET",
@@ -624,7 +628,7 @@ func DownloadUrlToFunc(url string, f func([]byte, int)) error {
 	return nil
 }
 
-// Pretty print an object
+// Printify prints pretty objects
 func Printify(d interface{}) {
 	bs, err := prettyjson.Marshal(d)
 	if err != nil {
@@ -633,6 +637,7 @@ func Printify(d interface{}) {
 	Println(string(bs))
 }
 
+// RenderTemp takes a template string and parses it with the temp data.
 func RenderTemp(data string, temp map[string]interface{}) string {
 	data, err := mustache.Render(data, temp)
 	if err != nil {
