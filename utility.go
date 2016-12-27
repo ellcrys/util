@@ -33,12 +33,6 @@ func init() {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// Println is a convenient function for fmt.Println.
-// Useful when you already have util package imported in current file
-func Println(any ...interface{}) {
-	fmt.Println(any...)
-}
-
 // UUID4 returns a UUID v4 string
 func UUID4() string {
 	return uuid.NewV4().String()
