@@ -26,15 +26,13 @@ func LogHook(hook logrus.Hook) {
 
 // Println prints errors to stderr using a looger. Uses Log.Error if
 // an error is passed, otherwise uses info.
-func Println(any ...interface{}) {
-	if len(any) == 0 {
-		switch v := any[0].(type) {
+func Println(args ...interface{}) {
+	if len(args) > 0 {
+		switch v := args[0].(type) {
 		case error:
 			Log.Error(v)
 		default:
 			Log.Info(v)
 		}
-	} else {
-		Log.Info(any...)
 	}
 }
