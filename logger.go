@@ -28,11 +28,11 @@ func LogHook(hook logrus.Hook) {
 // an error is passed, otherwise uses info.
 func Println(args ...interface{}) {
 	if len(args) > 0 {
-		switch v := args[0].(type) {
+		switch args[0].(type) {
 		case error:
-			Log.Error(v)
+			Log.Error(args...)
 		default:
-			Log.Info(v)
+			Log.Info(args...)
 		}
 	}
 }
