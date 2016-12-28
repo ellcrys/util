@@ -293,3 +293,18 @@ func TestFromBSONMap(t *testing.T) {
 	assert.Equal(t, bsonM["_id"].(bson.ObjectId).Hex(), container.ID)
 	assert.Equal(t, bsonM["name"].(string), container.Name)
 }
+
+func TestIfNil(t *testing.T) {
+	val := IfNil(2, func() interface{} {
+		return "a string"
+	})
+	assert.IsType(t, int(1), val)
+
+	val = IfNil(nil, func() interface{} {
+		return "a string"
+	})
+	assert.IsType(t, "string", val)
+
+	val = IfNil(nil, IfNilEmptyStringSlice)
+	assert.IsType(t, []string{}, val)
+}

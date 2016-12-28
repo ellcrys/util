@@ -651,3 +651,17 @@ func FromBSONMap(d bson.M, container interface{}) {
 
 	FromJSON(jsonBs, container)
 }
+
+// IfNilEmptyStringSlice returns an empty string slice.
+func IfNilEmptyStringSlice() interface{} {
+	return []string{}
+}
+
+// IfNil will run a callback function if val is nil. Otherwise, it
+// return val
+func IfNil(val interface{}, cb func() interface{}) interface{} {
+	if val == nil {
+		return cb()
+	}
+	return val
+}
