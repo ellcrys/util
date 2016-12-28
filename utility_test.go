@@ -308,3 +308,51 @@ func TestIfNil(t *testing.T) {
 	val = IfNil(nil, IfNilEmptyStringSlice)
 	assert.IsType(t, []string{}, val)
 }
+
+func TestGetDupItem(t *testing.T) {
+
+	mapSlice := []map[string]interface{}{
+		{"name": "john", "age": 20},
+		{"name": "jane", "age": 20},
+	}
+
+	obj, pos := GetDupItem(&mapSlice, "name")
+	assert.Equal(t, obj, nil)
+	assert.Equal(t, pos, 0)
+
+	mapSlice = []map[string]interface{}{
+		{"name": "john", "age": 20},
+		{"name": "john", "age": 50},
+	}
+
+	obj, pos = GetDupItem(&mapSlice, "name")
+	assert.Equal(t, obj.(map[string]interface{})["age"].(float64), float64(50))
+	assert.Equal(t, pos, 1)
+}
+
+func TestGetDupItemUsingStructType(t *testing.T) {
+
+	var data = []struct {
+		Name string
+		Age  int
+	}{
+		{Name: "john", Age: 20},
+		{Name: "jane", Age: 20},
+	}
+
+	obj, pos := GetDupItem(&data, "Name")
+	assert.Equal(t, obj, nil)
+	assert.Equal(t, pos, 0)
+
+	data = []struct {
+		Name string
+		Age  int
+	}{
+		{Name: "john", Age: 20},
+		{Name: "john", Age: 50},
+	}
+
+	obj, pos = GetDupItem(&data, "Name")
+	assert.Equal(t, obj.(map[string]interface{})["Age"].(float64), float64(50))
+	assert.Equal(t, pos, 1)
+}

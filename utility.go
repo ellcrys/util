@@ -665,3 +665,36 @@ func IfNil(val interface{}, cb func() interface{}) interface{} {
 	}
 	return val
 }
+
+// GetDupItem takes a slice of maps or a slice of struct type and
+// looks for items in the slice that have a specific field that
+// already exists in the slice. It returns the duplicate item and its
+// position in the slice.
+func GetDupItem(obj interface{}, key string) (interface{}, int) {
+
+	var sliceOfMap []map[string]interface{}
+	var foundValues []string
+
+	switch val := obj.(type) {
+	case []map[string]interface{}:
+		sliceOfMap = val
+	default:
+		bs, err := ToJSON(obj)
+		if err != nil {
+			panic(err)
+		}
+		if err = FromJSON(bs, &sliceOfMap); err != nil {
+			panic(err)
+		}
+	}
+
+	for i, m := range sliceOfMap {
+		if !InStringSlice(foundValues, m[key].(string)) {
+			foundValues = append(foundValues, m[key].(string))
+		} else {
+			return m, i
+		}
+	}
+
+	return nil, 0
+}
