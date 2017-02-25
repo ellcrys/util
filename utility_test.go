@@ -356,3 +356,7 @@ func TestGetDupItemUsingStructType(t *testing.T) {
 	assert.Equal(t, obj.(map[string]interface{})["Age"].(float64), float64(50))
 	assert.Equal(t, pos, 1)
 }
+
+func TestRemoveEmptyInStringSlice(t *testing.T) {
+	assert.Equal(t, RemoveEmptyInStringSlice([]string{"a", "", "c"}), []string{"a", "c"})
+}

@@ -698,3 +698,14 @@ func GetDupItem(obj interface{}, key string) (interface{}, int) {
 
 	return nil, 0
 }
+
+// RemoveEmptyInStringSlice takes a slice of strings and removes empty values
+func RemoveEmptyInStringSlice(l []string) []string {
+	var newSlice []string
+	for _, s := range l {
+		if len(strings.TrimSpace(s)) != 0 {
+			newSlice = append(newSlice, s)
+		}
+	}
+	return newSlice
+}
