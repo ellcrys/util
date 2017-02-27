@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -41,6 +42,13 @@ func UUID4() string {
 // Sha1 returns a sha1 hash
 func Sha1(str string) string {
 	h := sha1.New()
+	h.Write([]byte(str))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+// Sha256 returns a sha256 hash
+func Sha256(str string) string {
+	h := sha256.New()
 	h.Write([]byte(str))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }

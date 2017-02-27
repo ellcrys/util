@@ -27,6 +27,13 @@ func TestSha1(t *testing.T) {
 	assert.Equal(t, h, "a51dda7c7ff50b61eaea0444371f4a6a9301e501")
 }
 
+// TestSha256 tests that sha1 hashing a string will return expected hash
+func TestSha256(t *testing.T) {
+	txt := "john"
+	h := Sha256(txt)
+	assert.Equal(t, h, "96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a")
+}
+
 // TestDecodeJSONToMap tests that a json string is successfully decoded to a map
 func TestDecodeJSONToMap(t *testing.T) {
 	var s = `{"name":"john doe"}`
