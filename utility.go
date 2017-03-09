@@ -24,6 +24,7 @@ import (
 	"github.com/franela/goreq"
 	"github.com/hokaccha/go-prettyjson"
 	"github.com/satori/go.uuid"
+	spin "github.com/tj/go-spin"
 	"github.com/ugorji/go/codec"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -716,4 +717,21 @@ func RemoveEmptyInStringSlice(l []string) []string {
 		}
 	}
 	return newSlice
+}
+
+// Spinner prints a loading spinner to the terminal.
+// Returns a stop function to stop the spinner
+func Spinner() func() {
+	s := spin.New()
+	stop := false
+	go func() {
+		for !stop {
+			fmt.Printf("\r\033[36m\033[m %s loading", s.Next())
+			time.Sleep(100 * time.Millisecond)
+		}
+	}()
+
+	return func() {
+		stop = true
+	}
 }
