@@ -729,8 +729,7 @@ func Spinner(txt string) func() {
 			fmt.Printf("\r\033[36m\033[m %s %s", s.Next(), txt)
 			time.Sleep(100 * time.Millisecond)
 		}
-		fmt.Printf("\r\033[36m\033[m %s", s.Next())
-		fmt.Printf("\b\b%s", txt)
+		fmt.Printf("\r\033[2K")
 	}()
 
 	return func() {
