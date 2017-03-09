@@ -735,5 +735,6 @@ func Spinner(txt string) func() {
 	return func() {
 		s.Done()
 		stop = true
+		time.Sleep(50 * time.Millisecond)
 	}
 }
