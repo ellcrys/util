@@ -23,3 +23,5 @@ import:
   version: 70a7e670bd0d4bb35902d31f3a75a6689843abed
 - package: github.com/franela/goreq
 - package: github.com/cbroglie/mustache
+- package: github.com/ncodes/go-spin
+  version: ^1.0.0
