@@ -1,5 +1,5 @@
-hash: 808e8164e63904a36b70932e8c208bd78e8b91741aa68cdfbc452b6dfba23162
-updated: 2017-03-10T17:19:02.590198542+01:00
+hash: dd7e040d463282505df0812052057c92dda0f315404b9ce1f35c8695748139bd
+updated: 2017-03-11T09:32:44.159475668+01:00
 imports:
 - name: github.com/cbroglie/mustache
   version: 6857e4b493bdb8d4b1931446eb41704aeb4c28cb
@@ -20,7 +20,7 @@ imports:
   version: 57fdcb988a5c543893cc61bce354a6e24ab70022
   repo: https://github.com/mattn/go-isatty
 - name: github.com/ncodes/go-spin
-  version: d9cf5dfd6d7f5b9d1f62122ace69b7fda90f5793
+  version: ddabc69b6151945c05fc40e2ae3f2fc9396b77a2
 - name: github.com/satori/go.uuid
   version: 242673bbc820e051ef00033e274d32e08ece9e15
 - name: github.com/Sirupsen/logrus

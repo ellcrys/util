@@ -25,3 +25,4 @@ import:
 - package: github.com/cbroglie/mustache
 - package: github.com/ncodes/go-spin
   version: ddabc69b6151945c05fc40e2ae3f2fc9396b77a2
+
