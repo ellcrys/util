@@ -243,14 +243,6 @@ func TestJSONToSliceOfMap(t *testing.T) {
 	}
 }
 
-func TestMsgPack(t *testing.T) {
-	mpBytes, err := MsgPackEncode([]byte("john"))
-	assert.Nil(t, err)
-	decBytes, err := MsgPackDecode(mpBytes)
-	assert.Nil(t, err)
-	assert.Equal(t, string(decBytes), "john")
-}
-
 func TestInStringSliceRx(t *testing.T) {
 	strs := []string{"container", "content", "COOl"}
 	assert.Equal(t, InStringSliceRx(strs, ".*tent$"), true)

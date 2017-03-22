@@ -25,7 +25,6 @@ import (
 	"github.com/hokaccha/go-prettyjson"
 	spin "github.com/ncodes/go-spin"
 	"github.com/satori/go.uuid"
-	"github.com/ugorji/go/codec"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -478,24 +477,6 @@ func FloatToString(floatVal float64, precision int) string {
 	var v big.Float
 	v.SetFloat64(floatVal)
 	return v.Text('f', precision)
-}
-
-// MsgPackEncode encode a slice of bytes using messagepack
-func MsgPackEncode(d []byte) ([]byte, error) {
-	var b = make([]byte, 0, len(d))
-	var h codec.Handle = new(codec.JsonHandle)
-	var enc = codec.NewEncoderBytes(&b, h)
-	var err = enc.Encode(d)
-	return b, err
-}
-
-// MsgPackDecode decodes a slice of messagepack bytes
-func MsgPackDecode(msgEnc []byte) ([]byte, error) {
-	var d []byte
-	var h codec.Handle = new(codec.JsonHandle)
-	var dec = codec.NewDecoderBytes(msgEnc, h)
-	err := dec.Decode(&d)
-	return d, err
 }
 
 // StringSliceMatchString takes a slice of regex pattern and a string to
