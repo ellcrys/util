@@ -268,8 +268,9 @@ func TestDownloadURL(t *testing.T) {
 }
 
 func TestDownloadURLToFunc(t *testing.T) {
-	err := DownloadURLToFunc("https://google.com.ng", func(d []byte, status int) {
+	err := DownloadURLToFunc("https://google.com.ng", func(d []byte, status int) error {
 		assert.Equal(t, 200, status)
+		return nil
 	})
 	assert.Nil(t, err)
 }

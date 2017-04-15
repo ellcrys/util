@@ -576,7 +576,8 @@ func DownloadURL(url string) (*bytes.Buffer, int, error) {
 
 // DownloadURLToFunc fetches the content from a url and pass
 // downloaded chunks to a callback function.
-func DownloadURLToFunc(url string, f func([]byte, int)) error {
+// If err is returned from the callback, the function returns
+func DownloadURLToFunc(url string, f func([]byte, int) error) error {
 
 	res, err := goreq.Request{
 		Method:       "GET",
@@ -587,6 +588,8 @@ func DownloadURLToFunc(url string, f func([]byte, int)) error {
 	if err != nil {
 		return err
 	}
+
+	defer res.Body.Close()
 
 	buf := make([]byte, 0, 1*1024)
 
@@ -607,7 +610,9 @@ func DownloadURLToFunc(url string, f func([]byte, int)) error {
 			return err
 		}
 
-		f(buf, res.StatusCode)
+		if err = f(buf, res.StatusCode); err != nil {
+			return err
+		}
 	}
 
 	return nil
