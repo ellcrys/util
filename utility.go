@@ -30,6 +30,7 @@ import (
 
 func init() {
 	r.Seed(time.Now().UnixNano())
+	goreq.SetConnectTimeout(5 * time.Second)
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
