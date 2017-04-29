@@ -360,3 +360,7 @@ func TestGetDupItemUsingStructType(t *testing.T) {
 func TestRemoveEmptyInStringSlice(t *testing.T) {
 	assert.Equal(t, RemoveEmptyInStringSlice([]string{"a", "", "c"}), []string{"a", "c"})
 }
+
+func TestCryptoRandKey(t *testing.T) {
+	assert.Equal(t, len(CryptoRandKey(32)), 64)
+}

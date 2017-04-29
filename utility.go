@@ -3,6 +3,7 @@ package util
 import (
 	"bufio"
 	"bytes"
+	"crypto/rand"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/json"
@@ -19,6 +20,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"encoding/hex"
 
 	"github.com/cbroglie/mustache"
 	"github.com/franela/goreq"
@@ -724,4 +727,12 @@ func Spinner(txt string) func() {
 		stop = true
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+// CryptoRandKey creates a random string of a specific length to be used
+// as a cryptography key
+func CryptoRandKey(length int) string {
+	key := make([]byte, length)
+	rand.Read(key)
+	return hex.EncodeToString(key)
 }
