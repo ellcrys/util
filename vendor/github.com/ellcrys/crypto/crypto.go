@@ -3,6 +3,8 @@ package crypto
 
 import (
 	"crypto"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -11,9 +13,10 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
-	jose "gopkg.in/square/go-jose.v1"
-	jwt "github.com/dgrijalva/jwt-go"
 	"fmt"
+	jwt "github.com/dgrijalva/jwt-go"
+	jose "gopkg.in/square/go-jose.v1"
+	"io"
 )
 
 const VerificationFailed = "crypto/rsa: verification error"
@@ -25,7 +28,7 @@ func ParsePublicKey(pemBytes []byte) (*Signer, error) {
 	if block == nil {
 		return nil, errors.New("no key found or passed in")
 	}
-	
+
 	switch block.Type {
 	case "RSA PUBLIC KEY", "PUBLIC KEY":
 		rsa, err := x509.ParsePKIXPublicKey(block.Bytes)
@@ -59,15 +62,15 @@ func ParsePrivateKey(pemBytes []byte) (*Signer, error) {
 	}
 }
 
-// creates a new signer instance with 
+// creates a new signer instance with
 // rsa public or private loaded
 func newSigner(k interface{}) (*Signer, error) {
 	var signer *Signer
 	switch t := k.(type) {
 	case *rsa.PrivateKey:
-		signer = &Signer{ &rsa.PublicKey{}, t}
+		signer = &Signer{&rsa.PublicKey{}, t}
 	case *rsa.PublicKey:
-		signer = &Signer{ t, &rsa.PrivateKey{} }
+		signer = &Signer{t, &rsa.PrivateKey{}}
 	default:
 		return nil, fmt.Errorf("ssh: unsupported key type %T", k)
 	}
@@ -80,6 +83,7 @@ type Signer struct {
 }
 
 // Sign signs data with rsa-sha256
+// Deprecated
 func (r *Signer) Sign(data []byte) (string, error) {
 	h := sha256.New()
 	h.Write(data)
@@ -91,12 +95,29 @@ func (r *Signer) Sign(data []byte) (string, error) {
 	return "", err
 }
 
+// Sign signs data with rsa-sha256
+func (r *Signer) SignByte(data []byte, outEnc string) (string, error) {
+	h := sha256.New()
+	h.Write(data)
+	d := h.Sum(nil)
+	sig, err := rsa.SignPKCS1v15(rand.Reader, r.PrivateKey, crypto.SHA256, d)
+	if err == nil {
+		switch outEnc {
+		case "hex":
+			return ToHexString(sig), nil
+		case "base64url":
+			return ToBase64Raw(sig), nil
+		}
+	}
+	return "", err
+}
+
 // Verify checks the message using a rsa-sha256 signature
 func (r *Signer) Verify(message []byte, hexEncodedSig string) error {
 	sig, err := HexDecode(hexEncodedSig)
 	if err != nil {
 		return errors.New("invalid signature: unable to decode from hex to string")
-	} 
+	}
 	h := sha256.New()
 	h.Write(message)
 	d := h.Sum(nil)
@@ -108,7 +129,7 @@ func (r *Signer) Verify(message []byte, hexEncodedSig string) error {
 func (r *Signer) JWS_RSA_Sign(payload string) (string, error) {
 
 	// create jose signer
-	joseSigner, err := jose.NewSigner(jose.RS256, r.PrivateKey);
+	joseSigner, err := jose.NewSigner(jose.RS256, r.PrivateKey)
 	if err != nil {
 		return "", err
 	}
@@ -129,10 +150,10 @@ func (r *Signer) JWS_RSA_Sign(payload string) (string, error) {
 }
 
 // Verify a signature.
-// Accepts a the signature to be verified. An error is returned if 
+// Accepts a the signature to be verified. An error is returned if
 // signature is invalid or signature could not be verified
 func (r *Signer) JWS_RSA_Verify(signature string) (string, error) {
-	
+
 	// attempt to parse serialized signature
 	object, err := jose.ParseSigned(signature)
 	if err != nil {
@@ -142,12 +163,11 @@ func (r *Signer) JWS_RSA_Verify(signature string) (string, error) {
 	// verify the signature
 	output, err := object.Verify(r.PublicKey)
 	if err != nil {
-	    return "", errors.New("failed to verify signature")
+		return "", errors.New("failed to verify signature")
 	}
 
 	return string(output), nil
 }
-
 
 // encode byte slice to base64 url string
 func ToBase64(b []byte) string {
@@ -192,37 +212,37 @@ func HexDecode(hexStr string) (string, error) {
 func GenerateKeyPair() (map[string]string, error) {
 
 	kp := make(map[string]string)
-	privateKey, err := rsa.GenerateKey(rand.Reader, 1024); 
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-        return kp, err
-    }
+		return kp, err
+	}
 
-    // calculations to speed up private key operations and
-    // some basic sanity checks
-    privateKey.Precompute()
-    if err = privateKey.Validate(); err != nil {
-        return kp, err
-    }
+	// calculations to speed up private key operations and
+	// some basic sanity checks
+	privateKey.Precompute()
+	if err = privateKey.Validate(); err != nil {
+		return kp, err
+	}
 
-    // convert private key to pem encode
-    privBlock := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}
-    privPEMData := pem.EncodeToMemory(privBlock)
+	// convert private key to pem encode
+	privBlock := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}
+	privPEMData := pem.EncodeToMemory(privBlock)
 
-    // convert public key to pem encode
-    PubASN1, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
-    if err != nil {
-        return kp, err
-    }
+	// convert public key to pem encode
+	PubASN1, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
+	if err != nil {
+		return kp, err
+	}
 
-    pubPEMData := pem.EncodeToMemory(&pem.Block{
-        Type:  "PUBLIC KEY",
-        Bytes: PubASN1,
-    })
+	pubPEMData := pem.EncodeToMemory(&pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: PubASN1,
+	})
 
-    kp["private_key"] = string(privPEMData)
-    kp["public_key"] = string(pubPEMData)
+	kp["private_key"] = string(privPEMData)
+	kp["public_key"] = string(pubPEMData)
 
-    return kp, nil
+	return kp, nil
 }
 
 // Verify a JWT token using an RSA public key
@@ -234,28 +254,63 @@ func VerifyJWTRSA(token, publicKey string) (bool, *jwt.Token, error) {
 	state, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 
 		// ensure signing method is correct
-        if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-            return nil, errors.New("unknown signing method")
-        }
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, errors.New("unknown signing method")
+		}
 
-        parsedToken = token
+		parsedToken = token
 
-        // verify 
-        key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
-        if err != nil {
-        	return nil, err
-        }
+		// verify
+		key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
+		if err != nil {
+			return nil, err
+		}
 
-        return key, nil
-    })
+		return key, nil
+	})
 
-    if err != nil {
-    	return false, &jwt.Token{}, err
-    }
+	if err != nil {
+		return false, &jwt.Token{}, err
+	}
 
-    if !state.Valid {
-    	return false, &jwt.Token{}, errors.New("invalid jwt token")
-    }
+	if !state.Valid {
+		return false, &jwt.Token{}, errors.New("invalid jwt token")
+	}
 
-    return true, parsedToken, nil
+	return true, parsedToken, nil
+}
+
+func Encrypt(key, text []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	b := b64.StdEncoding.EncodeToString(text)
+	ciphertext := make([]byte, aes.BlockSize+len(b))
+	iv := ciphertext[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return nil, err
+	}
+	cfb := cipher.NewCFBEncrypter(block, iv)
+	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
+	return ciphertext, nil
+}
+
+func Decrypt(key, text []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	if len(text) < aes.BlockSize {
+		return nil, errors.New("ciphertext too short")
+	}
+	iv := text[:aes.BlockSize]
+	text = text[aes.BlockSize:]
+	cfb := cipher.NewCFBDecrypter(block, iv)
+	cfb.XORKeyStream(text, text)
+	data, err := b64.StdEncoding.DecodeString(string(text))
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }

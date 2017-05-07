@@ -21,6 +21,8 @@ import (
 	"strings"
 	"time"
 
+	pkgErrors "github.com/pkg/errors"
+
 	"encoding/hex"
 
 	"github.com/cbroglie/mustache"
@@ -551,6 +553,15 @@ func DownloadURL(url string) (*bytes.Buffer, int, error) {
 		return nil, 0, err
 	}
 
+	defer res.Body.Close()
+	if res.StatusCode < 200 && res.StatusCode > 299 {
+		str, err := res.Body.ToString()
+		if err != nil {
+			return nil, res.StatusCode, pkgErrors.Wrap(err, "failed to read body")
+		}
+		return nil, res.StatusCode, fmt.Errorf(str)
+	}
+
 	var data bytes.Buffer
 	buf := make([]byte, 0, 1*1024)
 
@@ -594,6 +605,9 @@ func DownloadURLToFunc(url string, f func([]byte, int) error) error {
 	}
 
 	defer res.Body.Close()
+	if res.StatusCode < 200 && res.StatusCode > 299 {
+		return f(nil, res.StatusCode)
+	}
 
 	buf := make([]byte, 0, 1*1024)
 
