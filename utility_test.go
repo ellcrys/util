@@ -267,7 +267,6 @@ func TestDownloadURL(t *testing.T) {
 	assert.NotNil(t, buf)
 }
 
-
 func TestDownloadURLToFunc(t *testing.T) {
 	err := DownloadURLToFunc("https://google.com.ng", func(d []byte, status int) error {
 		assert.Equal(t, 200, status)
@@ -364,4 +363,9 @@ func TestRemoveEmptyInStringSlice(t *testing.T) {
 
 func TestCryptoRandKey(t *testing.T) {
 	assert.Equal(t, len(CryptoRandKey(32)), 64)
+}
+
+func TestUniqueStringSlice(t *testing.T) {
+	s := []string{"debs", "gens", "debs"}
+	assert.Equal(t, UniqueStringSlice(s), []string{"debs", "gens"})
 }

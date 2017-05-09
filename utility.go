@@ -750,3 +750,14 @@ func CryptoRandKey(length int) string {
 	rand.Read(key)
 	return hex.EncodeToString(key)
 }
+
+// UniqueStringSlice returns a new string slice with duplicates removed
+func UniqueStringSlice(s []string) []string {
+	var u = []string{}
+	for _, _s := range s {
+		if !InStringSlice(u, _s) {
+			u = append(u, _s)
+		}
+	}
+	return u
+}
