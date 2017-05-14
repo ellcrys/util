@@ -761,3 +761,12 @@ func UniqueStringSlice(s []string) []string {
 	}
 	return u
 }
+
+// MustStringify encodes an object to json. It panics if an error occurs
+func MustStringify(v interface{}) []byte {
+	bs, err := ToJSON(v)
+	if err != nil {
+		panic(err)
+	}
+	return bs
+}

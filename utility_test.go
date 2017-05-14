@@ -369,3 +369,9 @@ func TestUniqueStringSlice(t *testing.T) {
 	s := []string{"debs", "gens", "debs"}
 	assert.Equal(t, UniqueStringSlice(s), []string{"debs", "gens"})
 }
+
+func TestMustStringifySucceeds(t *testing.T) {
+	m := map[string]int{"age": 100}
+	bs := MustStringify(m)
+	assert.Equal(t, []byte(`{"age":100}`), bs)
+}
