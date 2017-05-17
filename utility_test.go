@@ -8,9 +8,14 @@ import (
 	"time"
 
 	"github.com/ellcrys/crypto"
+	"github.com/ncodes/goreq"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/mgo.v2/bson"
 )
+
+func init() {
+	goreq.SetConnectTimeout(15 * time.Second)
+}
 
 // TestGenerateKeyPair tests that public and private key pairs are set
 func TestGenerateKeyPair(t *testing.T) {
@@ -261,14 +266,14 @@ func TestJSONNumberToInt64(t *testing.T) {
 }
 
 func TestDownloadURL(t *testing.T) {
-	buf, status, err := DownloadURL("https://google.com.ng")
+	buf, status, err := DownloadURL("https://google.com")
 	assert.Nil(t, err)
 	assert.Equal(t, status, 200)
 	assert.NotNil(t, buf)
 }
 
 func TestDownloadURLToFunc(t *testing.T) {
-	err := DownloadURLToFunc("https://google.com.ng", func(d []byte, status int) error {
+	err := DownloadURLToFunc("https://google.com", func(d []byte, status int) error {
 		assert.Equal(t, 200, status)
 		return nil
 	})
@@ -374,4 +379,21 @@ func TestMustStringifySucceeds(t *testing.T) {
 	m := map[string]int{"age": 100}
 	bs := MustStringify(m)
 	assert.Equal(t, []byte(`{"age":100}`), bs)
+}
+
+func TestToSliceInterface(t *testing.T) {
+	v, err := ToSliceInterface([]string{"a", "b"})
+	assert.Nil(t, err)
+	assert.Equal(t, []interface{}{"a", "b"}, v)
+
+	v, err = ToSliceInterface([]interface{}{"a", "b"})
+	assert.Nil(t, err)
+	assert.Equal(t, []interface{}{"a", "b"}, v)
+}
+
+func TestToSliceInterfaceNotASliceError(t *testing.T) {
+	v, err := ToSliceInterface("a")
+	assert.Nil(t, v)
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "not a slice")
 }

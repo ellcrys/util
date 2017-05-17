@@ -25,6 +25,8 @@ import (
 
 	"encoding/hex"
 
+	"reflect"
+
 	"github.com/cbroglie/mustache"
 	"github.com/franela/goreq"
 	"github.com/hokaccha/go-prettyjson"
@@ -769,4 +771,25 @@ func MustStringify(v interface{}) []byte {
 		panic(err)
 	}
 	return bs
+}
+
+// ToSliceInterface takes a slice and returns a slice of interfaces.
+func ToSliceInterface(s interface{}) ([]interface{}, error) {
+
+	if s == nil {
+		return nil, nil
+	}
+
+	val := reflect.ValueOf(s)
+	vType := val.Kind()
+	switch vType {
+	case reflect.Slice:
+		newSlice := make([]interface{}, val.Len())
+		for i := 0; i < val.Len(); i++ {
+			newSlice[i] = val.Index(i).Interface()
+		}
+		return newSlice, nil
+	default:
+		return nil, fmt.Errorf("not a slice")
+	}
 }
