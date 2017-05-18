@@ -397,3 +397,40 @@ func TestToSliceInterfaceNotASliceError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, err.Error(), "not a slice")
 }
+
+func TestCopyToStructFromStructToStruct(t *testing.T) {
+	type A struct {
+		Name string
+	}
+	type B struct {
+		Name string
+	}
+	a := A{Name: "peter"}
+	var b B
+	err := CopyToStruct(&b, a)
+	assert.Nil(t, err)
+	assert.EqualValues(t, a, b)
+}
+
+func TestCopyToStructFromMapToStruct(t *testing.T) {
+	type B struct {
+		Name string
+	}
+	a := map[string]interface{}{
+		"name": "ben",
+	}
+	var b B
+	err := CopyToStruct(&b, a)
+	assert.Nil(t, err)
+	assert.Equal(t, a["name"], b.Name)
+}
+
+func TestCopyToStructErrorIfDstIsNotStruct(t *testing.T) {
+	a := map[string]interface{}{
+		"name": "ben",
+	}
+	var b string
+	err := CopyToStruct(&b, a)
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "dst is not a struct")
+}

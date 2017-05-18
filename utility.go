@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fatih/structs"
 	pkgErrors "github.com/pkg/errors"
 
 	"encoding/hex"
@@ -31,6 +32,7 @@ import (
 	"github.com/franela/goreq"
 	"github.com/hokaccha/go-prettyjson"
 	spin "github.com/ncodes/go-spin"
+	"github.com/ncodes/mapstructure"
 	"github.com/satori/go.uuid"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -792,4 +794,29 @@ func ToSliceInterface(s interface{}) ([]interface{}, error) {
 	default:
 		return nil, fmt.Errorf("not a slice")
 	}
+}
+
+// CopyToStruct copies an object into another object. dst must be
+// a struct while src can be a struct or a map.
+// Use github.com/mitchellh/mapstructure supported struct tags to customize how
+// map to struct field mapping
+// Use github.com/fatih/structs supported struct tags to customize
+// struct to map field mapping
+func CopyToStruct(dst interface{}, src interface{}) error {
+
+	if v, ok := src.(map[string]interface{}); ok {
+		if !structs.IsStruct(dst) {
+			return fmt.Errorf("dst is not a struct")
+		}
+		return mapstructure.Decode(v, dst)
+	}
+
+	if structs.IsStruct(src) {
+		if !structs.IsStruct(dst) {
+			return fmt.Errorf("dst is not a struct")
+		}
+		return mapstructure.Decode(structs.New(src).Map(), dst)
+	}
+
+	return nil
 }
