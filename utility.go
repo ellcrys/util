@@ -21,6 +21,10 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/net/context"
+
+	"google.golang.org/grpc/metadata"
+
 	"github.com/fatih/structs"
 	pkgErrors "github.com/pkg/errors"
 
@@ -819,4 +823,26 @@ func CopyToStruct(dst interface{}, src interface{}) error {
 	}
 
 	return nil
+}
+
+// GetAuthToken returns authorization code of a specific bearer from a context
+func GetAuthToken(ctx context.Context, scheme string) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return "", fmt.Errorf("no metadata in context")
+	}
+
+	authorization := md["authorization"]
+	if len(authorization) == 0 {
+		return "", fmt.Errorf("authorization not included in context")
+	}
+
+	authSplit := strings.SplitN(authorization[0], " ", 2)
+	if len(authSplit) != 2 {
+		return "", fmt.Errorf("authorization format is invalid")
+	} else if authSplit[0] != scheme {
+		return "", fmt.Errorf("request unauthenticated with %s", scheme)
+	}
+
+	return authSplit[1], nil
 }

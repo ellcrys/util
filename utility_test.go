@@ -10,6 +10,8 @@ import (
 	"github.com/ellcrys/crypto"
 	"github.com/ncodes/goreq"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc/metadata"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -433,4 +435,38 @@ func TestCopyToStructErrorIfDstIsNotStruct(t *testing.T) {
 	err := CopyToStruct(&b, a)
 	assert.NotNil(t, err)
 	assert.Equal(t, err.Error(), "dst is not a struct")
+}
+
+func TestGetAuthTokenErrorCtxNoMetadata(t *testing.T) {
+	_, err := GetAuthToken(context.Background(), "bearer")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "no metadata in context")
+}
+
+func TestGetAuthTokenErrorCtxNoAuthorization(t *testing.T) {
+	ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("something", "else"))
+	_, err := GetAuthToken(ctx, "bearer")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "authorization not included in context")
+}
+
+func TestGetAuthTokenErrorAuthorizationFormatInvalid(t *testing.T) {
+	ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("authorization", "included"))
+	_, err := GetAuthToken(ctx, "bearer")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "authorization format is invalid")
+}
+
+func TestGetAuthTokenErrorAuthorizationHasUnexpectedBearer(t *testing.T) {
+	ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("authorization", "bear abc"))
+	_, err := GetAuthToken(ctx, "bearer")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "request unauthenticated with bearer")
+}
+
+func TestGetAuthTokenErrorAuthorizationReturnToken(t *testing.T) {
+	ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("authorization", "bearer abcefgh"))
+	token, err := GetAuthToken(ctx, "bearer")
+	assert.Nil(t, err)
+	assert.Equal(t, token, "abcefgh")
 }
