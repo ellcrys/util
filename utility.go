@@ -834,7 +834,7 @@ func GetAuthToken(ctx context.Context, scheme string) (string, error) {
 
 	authorization := md["authorization"]
 	if len(authorization) == 0 {
-		return "", fmt.Errorf("authorization not included in context")
+		return "", fmt.Errorf("authorization not included")
 	}
 
 	authSplit := strings.SplitN(authorization[0], " ", 2)

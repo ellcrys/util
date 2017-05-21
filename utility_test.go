@@ -447,7 +447,7 @@ func TestGetAuthTokenErrorCtxNoAuthorization(t *testing.T) {
 	ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("something", "else"))
 	_, err := GetAuthToken(ctx, "bearer")
 	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "authorization not included in context")
+	assert.Equal(t, err.Error(), "authorization not included")
 }
 
 func TestGetAuthTokenErrorAuthorizationFormatInvalid(t *testing.T) {
