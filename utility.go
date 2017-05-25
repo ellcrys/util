@@ -15,10 +15,12 @@ import (
 	r "math/rand"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"golang.org/x/net/context"
@@ -845,4 +847,14 @@ func GetAuthToken(ctx context.Context, scheme string) (string, error) {
 	}
 
 	return authSplit[1], nil
+}
+
+// OnTerminate calls a function when a terminate or interrupt signal is received.
+func OnTerminate(f func(s os.Signal)) {
+	sigs := make(chan os.Signal)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		s := <-sigs
+		f(s)
+	}()
 }
