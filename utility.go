@@ -255,12 +255,9 @@ func IsMapOfAny(any interface{}) bool {
 	switch any.(type) {
 	case map[string]interface{}:
 		return true
-		break
 	default:
 		return false
-		break
 	}
-	return false
 }
 
 // IsSlice checks that a variable value type is a slice
@@ -268,12 +265,9 @@ func IsSlice(any interface{}) bool {
 	switch any.(type) {
 	case []interface{}:
 		return true
-		break
 	default:
 		return false
-		break
 	}
-	return false
 }
 
 // ContainsOnlyMapType checks that a slice contains map[string]interface{} type
@@ -282,7 +276,6 @@ func ContainsOnlyMapType(s []interface{}) bool {
 		switch v.(type) {
 		case map[string]interface{}:
 			continue
-			break
 		default:
 			return false
 		}
@@ -296,7 +289,6 @@ func IsSliceOfStrings(s []interface{}) bool {
 		switch v.(type) {
 		case string:
 			continue
-			break
 		default:
 			return false
 		}
@@ -356,21 +348,16 @@ func ToInt64(num interface{}) int64 {
 	switch v := num.(type) {
 	case int:
 		return int64(v)
-		break
 	case int64:
 		return v
-		break
 	case float64:
 		return int64(v)
-		break
 	case string:
 		val, _ := strconv.ParseInt(v, 10, 64)
 		return val
-		break
 	default:
 		panic("type is unsupported")
 	}
-	return 0
 }
 
 // Env gets environment variable or return a default value when no set
@@ -517,14 +504,12 @@ func JSONNumberToInt64(val interface{}) int64 {
 			panic("JSONNumberToInt64: " + err.Error())
 		}
 		return num
-		break
 	default:
 		panic("JSONNumberToInt64: unknown type. Expects json.Number")
 	}
-	return 0
 }
 
-//  ToJSON converts struct or map to json
+// ToJSON converts struct or map to json
 func ToJSON(data interface{}) ([]byte, error) {
 	return json.Marshal(data)
 }
