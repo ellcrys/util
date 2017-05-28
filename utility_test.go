@@ -470,3 +470,35 @@ func TestGetAuthTokenErrorAuthorizationReturnToken(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, token, "abcefgh")
 }
+
+func TestFromMD(t *testing.T) {
+	md := metadata.Pairs("key_a", "value_a")
+	val := FromMD(md, "key_a")
+	assert.Equal(t, val, "value_a")
+}
+
+func TestFromMDWithContext(t *testing.T) {
+	md := metadata.Pairs("key_a", "value_a")
+	ctx := metadata.NewContext(context.Background(), md)
+	val := FromMD(ctx, "key_a")
+	assert.Equal(t, val, "value_a")
+}
+
+func TestFromIncomingMDWithContext(t *testing.T) {
+	md := metadata.Pairs("key_a", "value_a")
+	ctx := metadata.NewIncomingContext(context.Background(), md)
+	val := FromIncomingMD(ctx, "key_a")
+	assert.Equal(t, val, "value_a")
+}
+
+func TestFromMDReturnEmptyIfNotExist(t *testing.T) {
+	md := metadata.Pairs("key_a", "value_a")
+	val := FromMD(md, "key_b")
+	assert.Equal(t, val, "")
+}
+
+func TestFromMDReturnPanicIfTypeIsNotContextOrMetadata_MD(t *testing.T) {
+	assert.Panics(t, func() {
+		FromMD("", "key_b")
+	}, "unexpected value type")
+}
