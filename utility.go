@@ -878,3 +878,8 @@ func FromIncomingMD(d interface{}, key string) string {
 	}
 	return md[key][0]
 }
+
+// StrToPtr returns a pointer to a string
+func StrToPtr(str string) *string {
+	return &str
+}

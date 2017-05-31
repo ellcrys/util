@@ -502,3 +502,8 @@ func TestFromMDReturnPanicIfTypeIsNotContextOrMetadata_MD(t *testing.T) {
 		FromMD("", "key_b")
 	}, "unexpected value type")
 }
+
+func TestStrPtr(t *testing.T) {
+	var strPtr = "hello"
+	assert.Equal(t, StrToPtr("hello"), &strPtr)
+}
