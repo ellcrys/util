@@ -831,7 +831,7 @@ func GetAuthToken(ctx context.Context, scheme string) (string, error) {
 	authSplit := strings.SplitN(authorization[0], " ", 2)
 	if len(authSplit) != 2 {
 		return "", fmt.Errorf("authorization format is invalid")
-	} else if authSplit[0] != scheme {
+	} else if strings.ToLower(authSplit[0]) != scheme {
 		return "", fmt.Errorf("request unauthenticated with %s", scheme)
 	}
 
