@@ -815,6 +815,9 @@ func CopyToStruct(dst interface{}, src interface{}) error {
 
 // GetAuthToken returns authorization code of a specific bearer from a context
 func GetAuthToken(ctx context.Context, scheme string) (string, error) {
+
+	scheme = strings.ToLower(scheme)
+
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return "", fmt.Errorf("no metadata in context")
