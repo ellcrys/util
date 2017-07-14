@@ -520,6 +520,14 @@ func FromJSON(data []byte, container interface{}) error {
 	return json.Unmarshal(data, container)
 }
 
+// FromJSON2 is the same as FROMJSON except it reads numbers into json.Number
+// instead of float64
+func FromJSON2(data []byte, container interface{}) error {
+	d := json.NewDecoder(strings.NewReader(string(data)))
+	d.UseNumber()
+	return d.Decode(container)
+}
+
 // GetRandFromSlice returns a random value from a slice of interface.
 func GetRandFromSlice(slice []interface{}) interface{} {
 	if len(slice) == 0 {

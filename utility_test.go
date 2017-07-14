@@ -507,3 +507,10 @@ func TestStrPtr(t *testing.T) {
 	var strPtr = "hello"
 	assert.Equal(t, StrToPtr("hello"), &strPtr)
 }
+
+func TestFromJSON2(t *testing.T) {
+	var c map[string]interface{}
+	err := FromJSON2([]byte(`{ "number": 293871773 }`), &c)
+	assert.Nil(t, err)
+	assert.Equal(t, c["number"], json.Number("293871773"))
+}
