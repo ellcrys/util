@@ -894,3 +894,10 @@ func FromIncomingMD(d interface{}, key string) string {
 func StrToPtr(str string) *string {
 	return &str
 }
+
+// DecodeJSON decodes JSON content from a reader to container
+func DecodeJSON(r io.Reader, container interface{}) error {
+	j := json.NewDecoder(r)
+	j.UseNumber()
+	return j.Decode(container)
+}

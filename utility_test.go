@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"bytes"
+
 	"github.com/ellcrys/crypto"
 	"github.com/ncodes/goreq"
 	"github.com/stretchr/testify/assert"
@@ -513,4 +515,12 @@ func TestFromJSON2(t *testing.T) {
 	err := FromJSON2([]byte(`{ "number": 293871773 }`), &c)
 	assert.Nil(t, err)
 	assert.Equal(t, c["number"], json.Number("293871773"))
+}
+
+func TestDecodeJSON(t *testing.T) {
+	r := bytes.NewBuffer([]byte(`{ "name": "john" }`))
+	var c map[string]interface{}
+	err := DecodeJSON(r, &c)
+	assert.Nil(t, err)
+	assert.Equal(t, c, map[string]interface{}{"name": "john"})
 }
