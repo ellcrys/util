@@ -53,7 +53,8 @@ const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 // UUID4 returns a UUID v4 string
 func UUID4() string {
-	return uuid.NewV4().String()
+	uuid, _ := uuid.NewV4()
+	return uuid.String()
 }
 
 // Sha1 returns a sha1 hash
